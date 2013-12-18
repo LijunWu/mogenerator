@@ -1,0 +1,39 @@
+// DO NOT EDIT. This file is machine-generated and constantly overwritten.
+// Make changes to <$managedObjectMappingClassNameWithSuffix$>.m instead.
+
+#import "_<$managedObjectMappingClassNameWithSuffix$>.h"
+
+@implementation _<$managedObjectMappingClassNameWithSuffix$>
+
+- (id)initWithAttributes:(NSDictionary *)attributes {
+	//TODO:
+}
+
+//one-many relationShip
+<$foreach Relationship noninheritedRelationships do$>
+	<$if Relationship.isToMany$>
+- (<$Relationship.mutableUnorderedCollectionClassName$>*)<$Relationship.name$>Array {
+	<$Relationship.mutableUnorderedCollectionClassName$> *result = (<$Relationship.mutableUnorderedCollectionClassName$>*)[self mutableArrayValueForKey:@"<$Relationship.name$>"];
+	return result;
+}
+- (void)add<$Relationship.name.initialCapitalString$>:(<$Relationship.immutableCollectionClassName$>*)value_ {
+	[self.<$Relationship.name$>Array addObjectsFromArray:value_];
+}
+- (void)remove<$Relationship.name.initialCapitalString$>:(<$Relationship.immutableCollectionClassName$>*)value_ {
+	[self.<$Relationship.name$>Array removeObjectsInArray:value_];
+}
+- (void)add<$Relationship.name.initialCapitalString$>Object:(<$Relationship.destinationEntity.managedObjectClassName$>*)value_ {
+	[self.<$Relationship.name$>Array addObject:value_];
+}
+- (void)remove<$Relationship.name.initialCapitalString$>Object:(<$Relationship.destinationEntity.managedObjectClassName$>*)value_ {
+	[self.<$Relationship.name$>Array removeObject:value_];
+}
+	<$endif$>
+<$endforeach do$>
+
+
+
+
+
+@end
+

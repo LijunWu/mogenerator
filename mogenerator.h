@@ -30,6 +30,11 @@
 - (NSArray*)prettyFetchRequests;
 @end
 
+@interface NSEntityDescription (customBaseObjectClass)
+
+@end
+
+
 @interface NSAttributeDescription (typing)
 - (BOOL)hasScalarAttributeType;
 - (NSString*)scalarAttributeType;
@@ -49,6 +54,12 @@
 - (NSString*)immutableCollectionClassName;
 - (BOOL)jr_isOrdered;
 @end
+
+@interface NSRelationshipDescription (unorderedCollectionClassName)
+- (NSString*)mutableUnorderedCollectionClassName;
+- (NSString*)immutableUnorderedCollectionClassName;
+@end
+
 @interface NSObject (JustHereToSuppressIsOrderedNotImplementedCompilerWarning)
 - (BOOL)isOrdered;
 @end
@@ -79,5 +90,13 @@
     BOOL                  _swift;
     BOOL                  _v2;
     NSMutableDictionary   *templateVar;
+    
+    BOOL                  _objectModel;
+    NSString              *objectClassSuffix;
+    NSString              *baseObjectClass;
+    NSString              *machineObjectDir;
+    NSString              *humanObjectDir;
+    NSString              *baseObjectClassImport;
+    NSString              *baseObjectClassForce;
 }
 @end

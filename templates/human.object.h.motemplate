@@ -1,0 +1,6 @@
+#import "_<$managedObjectMappingClassNameWithSuffix$>.h"
+
+@interface <$managedObjectMappingClassNameWithSuffix$> : _<$managedObjectMappingClassNameWithSuffix$> {}
+// Custom logic goes here.
+@end
+

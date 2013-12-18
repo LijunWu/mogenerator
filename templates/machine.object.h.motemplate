@@ -1,0 +1,57 @@
+// DO NOT EDIT. This file is machine-generated and constantly overwritten.
+// Make changes to <$managedObjectMappingClassNameWithSuffix$>.h instead.
+
+<$if hasCustomSuperentityObject$><$if hasSuperentity$>#import "<$customSuperentityObject$>.h"
+<$else$><$if hasCustomBaseObjectCaseImport$>#import <$baseObjectClassImport$><$else$>#import "<$customSuperentityObject$>.h"<$endif$><$endif$><$endif$>
+
+#define <$managedObjectMappingClassNameWithSuffix$>Attributes <$managedObjectClassName$>Attributes
+#define <$managedObjectMappingClassNameWithSuffix$>Relationships <$managedObjectClassName$>Relationships
+
+@interface _<$managedObjectMappingClassNameWithSuffix$> : <$customSuperentityObject$> {}
+
+- (id)initWithAttributes:(NSDictionary *)attributes;
+
+//loop Attribute
+<$foreach Attribute noninheritedAttributes do$>
+<$if Attribute.hasDefinedAttributeType$>
+<$if TemplateVar.arc$>
+@property (nonatomic, strong) <$Attribute.objectAttributeType$> <$Attribute.name$>;
+<$else$>
+@property (nonatomic, retain) <$Attribute.objectAttributeType$> <$Attribute.name$>;
+<$endif$>
+<$endif$>
+<$if Attribute.hasScalarAttributeType$>
+@property (atomic) <$Attribute.scalarAttributeType$> <$Attribute.name$>Value;
+- (<$Attribute.scalarAttributeType$>)<$Attribute.name$>Value;
+- (void)set<$Attribute.name.initialCapitalString$>Value:(<$Attribute.scalarAttributeType$>)value_;
+<$endif$>
+<$endforeach do$>
+
+/* loop Relationship
+ * if one-many, use customized accessors to access immutable collection
+ */
+<$foreach Relationship noninheritedRelationships do$>
+<$if Relationship.isToMany$>
+<$if TemplateVar.arc$>
+@property (nonatomic, strong) <$Relationship.immutableUnorderedCollectionClassName$> *<$Relationship.name$>;
+<$else$>
+@property (nonatomic, retain) <$Relationship.immutableUnorderedCollectionClassName$> *<$Relationship.name$>;
+<$endif$>
+
+- (<$Relationship.mutableUnorderedCollectionClassName$>*)<$Relationship.name$>Array;
+- (void)add<$Relationship.name.initialCapitalString$>:(<$Relationship.immutableUnorderedCollectionClassName$>*)value_;
+- (void)remove<$Relationship.name.initialCapitalString$>:(<$Relationship.immutableUnorderedCollectionClassName$>*)value_;
+- (void)add<$Relationship.name.initialCapitalString$>Object:(<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$>*)value_;
+- (void)remove<$Relationship.name.initialCapitalString$>Object:(<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$>*)value_;
+
+<$else$>
+<$if TemplateVar.arc$>
+@property (nonatomic, strong) <$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *<$Relationship.name$>;
+<$else$>
+@property (nonatomic, retain) <$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *<$Relationship.name$>;
+<$endif$>
+<$endif$>
+<$endforeach do$>
+
+@end
+

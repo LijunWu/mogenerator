@@ -22,3 +22,6 @@ dist
 /mogenerator.xcodeproj/xcuserdata/
 /contributed templates/Nikita Zhuk/ponso/sample project/PonsoTest/PonsoTest.xcodeproj/project.xcworkspace/xcuserdata/
 /contributed templates/Nikita Zhuk/ponso/sample project/PonsoTest/PonsoTest.xcodeproj/xcuserdata/
+
+templates.bak
+*.swp
