@@ -4,20 +4,40 @@
 <$if hasCustomSuperentityObject$><$if hasSuperentity$>#import "<$customSuperentityObject$>.h"
 <$else$><$if hasCustomBaseObjectCaseImport$>#import <$baseObjectClassImport$><$else$>#import "<$customSuperentityObject$>.h"<$endif$><$endif$><$endif$>
 
+//property
 #define <$managedObjectMappingClassNameWithSuffix$>Attributes <$managedObjectClassName$>Attributes
 #define <$managedObjectMappingClassNameWithSuffix$>Relationships <$managedObjectClassName$>Relationships
 
+//property mapping according to MagicalRecord
+
+<$foreach Attribute noninheritedAttributes do$>
+	<$if Attribute.objectAttributeMapKeys.@count > 0$>
+extern const struct <$managedObjectMappingClassNameWithSuffix$><$Attribute.name.initialCapitalString$>MapKeys {<$foreach Key Attribute.objectAttributeMapKeys do$>
+	<$if TemplateVar.arc$>__unsafe_unretained<$endif$> NSString *<$Key.description$>;<$endforeach do$>
+} <$managedObjectMappingClassNameWithSuffix$><$Attribute.name.initialCapitalString$>MapKeys;
+	<$endif$>
+<$endforeach do$>
+
+
+	
 @interface _<$managedObjectMappingClassNameWithSuffix$> : <$customSuperentityObject$> {}
 
+//super class need to have this method.
 - (id)initWithAttributes:(NSDictionary *)attributes;
+
+<$if TemplateVar.arc$>
+@property (nonatomic, strong, readonly) NSDictionary *mapping;
+<$else$>
+@property (nonatomic, retain, readonly) NSDictionary *mapping;
+<$endif$>
 
 //loop Attribute
 <$foreach Attribute noninheritedAttributes do$>
 <$if Attribute.hasDefinedAttributeType$>
 <$if TemplateVar.arc$>
-@property (nonatomic, strong) <$Attribute.objectAttributeType$> <$Attribute.name$>;
+@property (nonatomic, <$if Attribute.isObjectAttributeStringType$>copy<$else$>strong<$endif$>>) <$Attribute.objectAttributeType$> <$Attribute.name$>;
 <$else$>
-@property (nonatomic, retain) <$Attribute.objectAttributeType$> <$Attribute.name$>;
+@property (nonatomic, <$if Attribute.isObjectAttributeStringType$>copy<$else$>retain<$endif$>) <$Attribute.objectAttributeType$> <$Attribute.name$>;
 <$endif$>
 <$endif$>
 <$if Attribute.hasScalarAttributeType$>

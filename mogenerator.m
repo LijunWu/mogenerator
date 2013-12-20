@@ -387,20 +387,39 @@ NSString  *gObjectClassSuffix;
     return gCustomBaseObjectClassImport == nil ? NO : YES;
 }
 
+- (BOOL)hasCustomObjectClass {
+    NSString *entityClassName = [self managedObjectClassName];
+    BOOL result = !([entityClassName isEqualToString:@"NSObject"]
+                    || [entityClassName isEqualToString:@""]
+                    || [entityClassName isEqualToString:gCustomBaseObjectClass]);
+    return result;
+}
+
 - (NSString*)baseObjectClassImport {
     return gCustomBaseObjectClassImport;
 }
 
 - (BOOL)hasCustomSuperentityObject {
-    return (gCustomBaseObjectClass) ? YES : NO;
-}
-
-- (NSString*)customSuperentityObject {
-    NSString *forcedBaseClass = [self forcedCustomBaseClass];
+    NSString *forcedBaseClass = [self forcedCustomBaseObjectClass];
     if (!forcedBaseClass) {
         NSEntityDescription *superentity = [self superentity];
         if (superentity) {
-            return [superentity managedObjectClassName];
+            return [superentity hasCustomObjectClass] ? YES : NO;
+        } else {
+            return gCustomBaseObjectClass ? YES : NO;
+        }
+    } else {
+        return YES;
+    }
+}
+
+
+- (NSString*)customSuperentityObject {
+    NSString *forcedBaseClass = [self forcedCustomBaseObjectClass];
+    if (!forcedBaseClass) {
+        NSEntityDescription *superentity = [self superentity];
+        if (superentity) {
+            return [superentity managedObjectMappingClassNameWithSuffix];
         } else {
             return gCustomBaseObjectClass ? gCustomBaseObjectClass : @"NSObject";
         }
@@ -625,6 +644,51 @@ NSString  *gObjectClassSuffix;
 	return userInfoByKeys;
 }
 
+
+@end
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - NSAttributeDescription (objectClassTyping) -
+@implementation NSAttributeDescription (objectClassTyping)
+
+- (BOOL)isObjectAttributeStringType {
+    NSString *result = [self objectAttributeType];
+    return [result isEqualToString:@"NSString"];
+}
+
+//According to MagicalRecord
+- (NSArray *)objectAttributeMapKeys {
+    static NSString * const kMagicalRecordImportAttributeKeyMapKey = @"mappedKeyName";
+    static NSUInteger const kMagicalRecordImportMaximumAttributeFailoverDepth = 10;
+    NSMutableArray *mapKeys = [NSMutableArray arrayWithCapacity:kMagicalRecordImportMaximumAttributeFailoverDepth];
+    
+    NSString *attributeName = [self name];
+    [mapKeys addObject:attributeName];
+    
+    NSPredicate *predicate = nil;
+    NSString *lookupKey = [[self userInfo] valueForKey:kMagicalRecordImportAttributeKeyMapKey];
+    if (lookupKey) {
+        predicate = [NSPredicate predicateWithFormat:@"SELF = %@", lookupKey];
+        if (![[mapKeys filteredArrayUsingPredicate:predicate] count]) {
+            [mapKeys addObject:lookupKey];
+        }
+    }
+    
+    for (NSUInteger i = 1; i < kMagicalRecordImportMaximumAttributeFailoverDepth; i++)
+    {
+        attributeName = [NSString stringWithFormat:@"%@.%lu", kMagicalRecordImportAttributeKeyMapKey, (unsigned long)i];
+        lookupKey = [[self userInfo] valueForKey:attributeName];
+        if (lookupKey)
+        {
+            predicate = [NSPredicate predicateWithFormat:@"SELF = %@", lookupKey];
+            if (![[mapKeys filteredArrayUsingPredicate:predicate] count]) {
+                [mapKeys addObject:lookupKey];
+            }
+        }
+    }
+
+    return [NSArray arrayWithArray:mapKeys];
+}
 
 @end
 

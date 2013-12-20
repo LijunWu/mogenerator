@@ -3,10 +3,34 @@
 
 #import "_<$managedObjectMappingClassNameWithSuffix$>.h"
 
+@interface _<$managedObjectMappingClassNameWithSuffix$> : () {}
+<$if TemplateVar.arc$>
+@property (nonatomic, strong) NSDictionary *mapping;
+<$else$>
+@property (nonatomic, retain) NSDictionary *mapping;
+<$endif$>
+@end
+
 @implementation _<$managedObjectMappingClassNameWithSuffix$>
 
 - (id)initWithAttributes:(NSDictionary *)attributes {
-	//TODO:
+<$if hasCustomSuperentityObject$>
+	if (self = [super initWithAttributes:attributes]) {
+<$else$>
+	if (self = [self init]) {
+<$endif$>
+		//TODO:
+<$if noninheritedRelationships.@count > 0$>
+		NSString tmpMapKey = nil;
+<$foreach Attribute noninheritedAttributes do$>
+<$if Attribute.hasDefinedAttributeType$>
+		key = [self lookupMapKeyFor
+		_<$Attribute.name$> = attributes objectForKey:xxxx
+<$endif$>
+<$endforeach$>
+<$endif$>
+	}
+	return self;
 }
 
 //one-many relationShip

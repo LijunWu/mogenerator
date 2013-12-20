@@ -3,6 +3,10 @@
 //   Some rights reserved: http://opensource.org/licenses/mit
 //   http://github.com/rentzsch/mogenerator
 
+/*
+ *  IMPORTANT: 通过valueForKeyPath:调用方法，所以可以通过category扩展
+ */
+
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
