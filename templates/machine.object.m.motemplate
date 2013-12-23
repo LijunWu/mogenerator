@@ -3,6 +3,23 @@
 
 #import "_<$managedObjectMappingClassNameWithSuffix$>.h"
 
+//property mapping according to MagicalRecord
+<$foreach Attribute noninheritedAttributes do$>
+	<$if Attribute.objectAttributeMapKeys.@count > 0$>
+const struct <$managedObjectMappingClassNameWithSuffix$><$Attribute.name.initialCapitalString$>MapKeys <$managedObjectMappingClassNameWithSuffix$><$Attribute.name.initialCapitalString$>MapKeys = {<$foreach Key Attribute.objectAttributeMapKeys do$>
+	.<$Key.mapKeyName$> = @"<$Key.description$>",<$endforeach do$>
+};
+<$endif$>
+<$endforeach do$>
+
+<$foreach Relationship noninheritedRelationships do$>
+	<$if Relationship.objectRelationshipMapKeys.@count > 0$>
+const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.initialCapitalString$>MapKeys <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.initialCapitalString$>MapKeys = {<$foreach Key Relationship.objectRelationshipMapKeys do$>
+	.<$Key.mapKeyName$> = @"<$Key.description$>",<$endforeach do$>
+};
+<$endforeach do$>
+
+
 @interface _<$managedObjectMappingClassNameWithSuffix$> : () {}
 <$if TemplateVar.arc$>
 @property (nonatomic, strong) NSDictionary *mapping;
@@ -19,14 +36,41 @@
 <$else$>
 	if (self = [self init]) {
 <$endif$>
-		//TODO:
-<$if noninheritedRelationships.@count > 0$>
-		NSString tmpMapKey = nil;
+		NSString *tmpValue = nil;
+		NSString *tmpKey = nil;
+		NSMutableDictionary *tmpMapping = [NSMutableDictionary dictionary];
+		
+//loop atribute
+<$if noninheritedAttributes.@count > 0$>
 <$foreach Attribute noninheritedAttributes do$>
 <$if Attribute.hasDefinedAttributeType$>
-		key = [self lookupMapKeyFor
-		_<$Attribute.name$> = attributes objectForKey:xxxx
+		tmpKey = [<$Attribute.objectAttributeMapKeysDesc$> valueForKeyPath:@"<$Attribute.name$>"];
+		if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
+			[mapping addEntriesFromDictionary:@{@"<$Attribute.name$>", tmpKey}];
+			tmpValue = [attributes valueForKeyPath:tmpKey];
+			if (![tmpValue isEqual:[NSNull null]]) {
+				self.<$Attribute.name$> = tmpValue;
+			}
+			<$if Attribute.hasDefaultValue$>else {
+				self.<$Attribute.name$> = <$Attribute.defaultValueDesc$>;
+			}
+			<$endif$>
+		}
 <$endif$>
+<$endforeach$>
+<$endif$>
+//loop relationShip
+<$if noninheritedRelationships.@count > 0$>
+<$foreach Relationship noninheritedRelationships do$>
+		tmpKey = [<$Relationship.objectRelationshipMapKeysDesc$> valueForKeyPath:@"<$Relationship.name$>"];
+		if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
+			[mapping addEntriesFromDictionary:@{@"<$Relationship.name$>", tmpKey}];
+			tmpValue = [attributes valueForKeyPath:tmpKey];
+			if (![tmpValue isEqual:[NSNull null]]) {
+				self.<$Relationship.name$> = tmpValue;
+			}
+			<$endif$>
+		}
 <$endforeach$>
 <$endif$>
 	}

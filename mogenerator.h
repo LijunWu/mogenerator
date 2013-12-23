@@ -72,6 +72,11 @@
 - (NSString*)camelCaseString;
 @end
 
+@interface NSString (mapKeyName)
+- (NSString*)mapKeyName;
+@end
+
+
 @interface MOGeneratorApp : NSObject <DDCliApplicationDelegate> {
     NSString              *origModelBasePath;
     NSString              *tempGeneratedMomFilePath;

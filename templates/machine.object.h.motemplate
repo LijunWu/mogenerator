@@ -9,16 +9,21 @@
 #define <$managedObjectMappingClassNameWithSuffix$>Relationships <$managedObjectClassName$>Relationships
 
 //property mapping according to MagicalRecord
-
 <$foreach Attribute noninheritedAttributes do$>
 	<$if Attribute.objectAttributeMapKeys.@count > 0$>
 extern const struct <$managedObjectMappingClassNameWithSuffix$><$Attribute.name.initialCapitalString$>MapKeys {<$foreach Key Attribute.objectAttributeMapKeys do$>
-	<$if TemplateVar.arc$>__unsafe_unretained<$endif$> NSString *<$Key.description$>;<$endforeach do$>
+	<$if TemplateVar.arc$>__unsafe_unretained<$endif$> NSString *<$Key.mapKeyName$>;<$endforeach do$>
 } <$managedObjectMappingClassNameWithSuffix$><$Attribute.name.initialCapitalString$>MapKeys;
 	<$endif$>
 <$endforeach do$>
 
-
+<$foreach Relationship noninheritedRelationships do$>
+	<$if Relationship.objectRelationshipMapKeys.@count > 0$>
+extern const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.initialCapitalString$>MapKeys {<$foreach Key Relationship.objectRelationshipMapKeys do$>
+	<$if TemplateVar.arc$>__unsafe_unretained<$endif$> NSString *<$Key.mapKeyName$>;<$endforeach do$>
+} <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.initialCapitalString$>MapKeys;
+	<$endif$>
+<$endforeach do$>
 	
 @interface _<$managedObjectMappingClassNameWithSuffix$> : <$customSuperentityObject$> {}
 

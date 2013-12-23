@@ -686,10 +686,49 @@ NSString  *gObjectClassSuffix;
             }
         }
     }
-
+    
     return [NSArray arrayWithArray:mapKeys];
 }
 
+- (NSString *)objectAttributeMapKeysDesc {
+    NSArray *mapKeys = [self objectAttributeMapKeys];
+    NSMutableString *ret = [NSMutableString string];
+    [ret appendString:@"@{"];
+    NSString *mk = nil;
+    NSUInteger count = [mapKeys count];
+    for (int i = 0; i < count; i++) {
+        mk = mapKeys[i];
+        [ret appendFormat:@"@\"%@\": @(1)", mk];
+        if (i != count - 1) {
+            [ret appendString:@"; "];
+        }
+    }
+    [ret appendString:@"}"];
+    return [NSString stringWithString:ret];
+}
+
+- (BOOL)hasDefaultValue {
+    if (self.defaultValue && ![self.defaultValue isEqual:[NSNull null]] &&
+        ([self.defaultValue isKindOfClass:[NSString class]] || [self.defaultValue isKindOfClass:[NSNumber class]])) {
+        return YES;
+    }
+    else {
+        return NO;
+    }
+}
+
+- (NSString *)defaultValueDesc {
+    if ([self hasDefaultValue]) {
+        if ([self.defaultValue isKindOfClass:[NSString class]]) {
+            return [NSString stringWithFormat:@"@\"%@\"", self.defaultValue];
+        }
+        else if ([self.defaultValue isKindOfClass:[NSNumber class]]) {
+            return [NSString stringWithFormat:@"@(%@)", self.defaultValue];
+        }
+    }
+    
+    return @"";
+}
 @end
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -710,6 +749,56 @@ NSString  *gObjectClassSuffix;
     } else {
         return NO;
     }
+}
+
+- (NSArray *)objectRelationshipMapKeys {
+    static NSString * const kMagicalRecordImportAttributeKeyMapKey = @"mappedKeyName";
+    static NSUInteger const kMagicalRecordImportMaximumAttributeFailoverDepth = 10;
+    NSMutableArray *mapKeys = [NSMutableArray arrayWithCapacity:kMagicalRecordImportMaximumAttributeFailoverDepth];
+    
+    NSString *attributeName = [self name];
+    [mapKeys addObject:attributeName];
+    
+    NSPredicate *predicate = nil;
+    NSString *lookupKey = [[self userInfo] valueForKey:kMagicalRecordImportAttributeKeyMapKey];
+    if (lookupKey) {
+        predicate = [NSPredicate predicateWithFormat:@"SELF = %@", lookupKey];
+        if (![[mapKeys filteredArrayUsingPredicate:predicate] count]) {
+            [mapKeys addObject:lookupKey];
+        }
+    }
+    
+    for (NSUInteger i = 1; i < kMagicalRecordImportMaximumAttributeFailoverDepth; i++)
+    {
+        attributeName = [NSString stringWithFormat:@"%@.%lu", kMagicalRecordImportAttributeKeyMapKey, (unsigned long)i];
+        lookupKey = [[self userInfo] valueForKey:attributeName];
+        if (lookupKey)
+        {
+            predicate = [NSPredicate predicateWithFormat:@"SELF = %@", lookupKey];
+            if (![[mapKeys filteredArrayUsingPredicate:predicate] count]) {
+                [mapKeys addObject:lookupKey];
+            }
+        }
+    }
+    
+    return [NSArray arrayWithArray:mapKeys];
+}
+
+- (NSString *)objectRelationshipMapKeysDesc {
+    NSArray *mapKeys = [self objectRelationshipMapKeys];
+    NSMutableString *ret = [NSMutableString string];
+    [ret appendString:@"@{"];
+    NSString *mk = nil;
+    NSUInteger count = [mapKeys count];
+    for (int i = 0; i < count; i++) {
+        mk = mapKeys[i];
+        [ret appendFormat:@"@\"%@\": @(1)", mk];
+        if (i != count - 1) {
+            [ret appendString:@"; "];
+        }
+    }
+    [ret appendString:@"}"];
+    return [NSString stringWithString:ret];
 }
 
 @end
@@ -741,6 +830,14 @@ NSString  *gObjectClassSuffix;
         [camelCasedWordArray addObject:[[lowerCasedWordArray objectAtIndex:wordIndex] initialCapitalString]];
     }
     return [camelCasedWordArray componentsJoinedByString:@""];
+}
+@end
+
+#pragma mark - NSString (mapKeyName) -
+@implementation NSString (mapKeyName)
+- (NSString*)mapKeyName {
+    NSString *temp = [self stringByReplacingOccurrencesOfString:@"." withString:@"_"];
+    return [NSString stringWithFormat:@"%@_", temp];
 }
 @end
 
