@@ -389,7 +389,7 @@ NSString  *gObjectClassSuffix;
 
 - (BOOL)hasCustomObjectClass {
     NSString *entityClassName = [self managedObjectClassName];
-    BOOL result = !([entityClassName isEqualToString:@"NSObject"]
+    BOOL result = !([entityClassName isEqualToString:@"NSManagedObject"]
                     || [entityClassName isEqualToString:@""]
                     || [entityClassName isEqualToString:gCustomBaseObjectClass]);
     return result;

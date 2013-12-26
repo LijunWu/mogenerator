@@ -39,12 +39,11 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 		NSString *tmpValue = nil;
 		NSString *tmpKey = nil;
 		NSMutableDictionary *tmpMapping = [NSMutableDictionary dictionary];
-		
 //loop atribute
 <$if noninheritedAttributes.@count > 0$>
 <$foreach Attribute noninheritedAttributes do$>
 <$if Attribute.hasDefinedAttributeType$>
-		tmpKey = [<$Attribute.objectAttributeMapKeysDesc$> valueForKeyPath:@"<$Attribute.name$>"];
+		tmpKey = <$if Attribute.objectAttributeMapKeys.@count > 1$>[<$Attribute.objectAttributeMapKeysDesc$> valueForKeyPath:@"<$Attribute.name$>"]<$else$>@"<$Attribute.name$>"<$endif$>;
 		if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
 			[mapping addEntriesFromDictionary:@{@"<$Attribute.name$>", tmpKey}];
 			tmpValue = [attributes valueForKeyPath:tmpKey];
@@ -62,7 +61,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 //loop relationShip
 <$if noninheritedRelationships.@count > 0$>
 <$foreach Relationship noninheritedRelationships do$>
-		tmpKey = [<$Relationship.objectRelationshipMapKeysDesc$> valueForKeyPath:@"<$Relationship.name$>"];
+		tmpKey = <$if Relationship.objectRelationshipMapKeys.@count > 1$>[<$Relationship.objectRelationshipMapKeysDesc$> valueForKeyPath:@"<$Relationship.name$>"]<$else$>@"<$Relationship.name$>"<$endif$>;
 		if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
 			[mapping addEntriesFromDictionary:@{@"<$Relationship.name$>", tmpKey}];
 			tmpValue = [attributes valueForKeyPath:tmpKey];
@@ -77,8 +76,89 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 	return self;
 }
 
-//one-many relationShip
+- (id)initWithCoder:(NSCoder *)coder {
+<$if hasCustomSuperentityObject$>
+	self = [super initWithCoder:coder];
+<$else$>
+	<$if hasCustomBaseObjectCaseImport$>
+	self = [super initWithCoder:coder];
+	<$else$>
+	self = [self init];
+	<$endif$>
+<$endif$>
+	if (self) {
+//loop atribute
+<$if noninheritedAttributes.@count > 0$>
+<$foreach Attribute noninheritedAttributes do$>
+<$if Attribute.hasDefinedAttributeType$>
+		self.<$Attribute.name$> = [coder decodeObjectForKey:@"<$Attribute.name$>"];
+<$endif$>
+<$endforeach$>
+<$endif$>
+//loop relationShip
+<$if noninheritedRelationships.@count > 0$>
 <$foreach Relationship noninheritedRelationships do$>
+		self.<$Relationship.name$> = [coder decodeObjectForKey:@"<$Relationship.name$>"];
+
+<$endforeach$>
+<$endif$>
+	}
+	return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+<$if hasCustomSuperentityObject$>
+	[super encodeWithCoder:coder];
+<$else$>
+<$if hasCustomBaseObjectCaseImport$>
+	[super encodeWithCoder:coder];
+<$endif$>
+<$endif$>
+
+//loop atribute
+<$if noninheritedAttributes.@count > 0$>
+<$foreach Attribute noninheritedAttributes do$>
+<$if Attribute.hasDefinedAttributeType$>
+	if (self.<$Attribute.name$> != nil) [coder encodeObject:self.<$Attribute.name$> forKey:@"<$Attribute.name$>"];
+<$endif$>
+<$endforeach$>
+<$endif$>
+//loop relationShip
+<$if noninheritedRelationships.@count > 0$>
+<$foreach Relationship noninheritedRelationships do$>
+	if (self.<$Relationship.name$> != nil) [coder encodeObject:self.<$Relationship.name$> forKey:@"<$Relationship.name$>"];
+<$endforeach$>
+<$endif$>
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+<$if !hasCustomSuperentityObject$>
+	<$if !hasCustomBaseObjectCaseImport$>
+	<$managedObjectMappingClassNameWithSuffix$> *aObject = [[self.class allocWithZone:zone] init];
+	<$else$>
+	<$managedObjectMappingClassNameWithSuffix$> *aObject = [super copyWithZone:zone];
+	<$endif$>
+<$endif$>
+//loop atribute
+<$if noninheritedAttributes.@count > 0$>
+<$foreach Attribute noninheritedAttributes do$>
+<$if Attribute.hasDefinedAttributeType$>
+	aObject.<$Attribute.name$> = self.<$Attribute.name$>;
+<$endif$>
+<$endforeach$>
+<$endif$>
+//loop relationShip
+<$if noninheritedRelationships.@count > 0$>
+<$foreach Relationship noninheritedRelationships do$>
+	aObject.<$Relationship.name$> = self.<$Relationship.name$>;
+<$endforeach$>
+<$endif$>
+	return aObject;
+}
+
+
+<$foreach Relationship noninheritedRelationships do$>
+//one-many relationShip
 	<$if Relationship.isToMany$>
 - (<$Relationship.mutableUnorderedCollectionClassName$>*)<$Relationship.name$>Array {
 	<$Relationship.mutableUnorderedCollectionClassName$> *result = (<$Relationship.mutableUnorderedCollectionClassName$>*)[self mutableArrayValueForKey:@"<$Relationship.name$>"];

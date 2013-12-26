@@ -71,7 +71,11 @@
     if (whiteSet == nil)
         whiteSet = [[NSCharacterSet characterSetWithCharactersInString:@" \t\n\r\v\f"] retain];
     [scanner setCharactersToBeSkipped:whiteSet];
-
+    
+    if ([aString hasPrefix:@"if (hasCustomSuperentity"]) {
+        NSLog(@"xx");
+    }
+    
     return [self parseFromScanner:scanner template:template];
 }
 

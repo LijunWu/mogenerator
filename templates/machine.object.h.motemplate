@@ -1,6 +1,6 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
 // Make changes to <$managedObjectMappingClassNameWithSuffix$>.h instead.
-
+// baseObjectClass confirm to NSCopying and NSCoding default
 <$if hasCustomSuperentityObject$><$if hasSuperentity$>#import "<$customSuperentityObject$>.h"
 <$else$><$if hasCustomBaseObjectCaseImport$>#import <$baseObjectClassImport$><$else$>#import "<$customSuperentityObject$>.h"<$endif$><$endif$><$endif$>
 
