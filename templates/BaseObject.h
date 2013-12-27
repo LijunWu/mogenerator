@@ -1,10 +1,11 @@
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
-@interface MyBaseClass : NSManagedObject {
-	double ivar;
-}
+@interface BaseObject : NSObject <NSCoding, NSCopying>
 
-- (double)ivar;
-- (void)setIvar:(double)ivar_;
+- (id)initWithAttributes:(NSDictionary *)attributes;
+- (NSDictionary *)dictionaryForSerialization;
+
++ (NSArray *)objectsFromJSONObjects:(NSArray *)aJSONObjects;
++ (id)objectFromJSONObject:(NSDictionary *)aJSONObject;
 
 @end
