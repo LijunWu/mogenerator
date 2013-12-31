@@ -653,7 +653,7 @@ NSString  *gObjectClassSuffix;
 
 - (BOOL)isObjectAttributeStringType {
     NSString *result = [self objectAttributeType];
-    return [result isEqualToString:@"NSString"];
+    return [result isEqualToString:@"NSString*"];
 }
 
 //According to MagicalRecord

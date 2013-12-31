@@ -48,10 +48,26 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 			[mapping addEntriesFromDictionary:@{@"<$Attribute.name$>", tmpKey}];
 			tmpValue = [attributes valueForKeyPath:tmpKey];
 			if (![tmpValue isEqual:[NSNull null]]) {
-				self.<$Attribute.name$> = tmpValue;
+			<$if TemplateVar.arc$>
+				_<$Attribute.name$> = tmpValue;
+			<$else$>
+				<$if Attribute.isObjectAttributeStringType$>
+				_<$Attribute.name$> = [tmpValue copy];
+				<$else$>
+				_<$Attribute.name$> = [tmpValue retain];
+				<$endif$>
+			<$endif$>
 			}
 			<$if Attribute.hasDefaultValue$>else {
-				self.<$Attribute.name$> = <$Attribute.defaultValueDesc$>;
+				<$if TemplateVar.arc$>
+				_<$Attribute.name$> = <$Attribute.defaultValueDesc$>;
+				<$else$>
+					<$if Attribute.isObjectAttributeStringType$>
+				_<$Attribute.name$> = [<$Attribute.defaultValueDesc$> copy];
+					<$else$>
+				_<$Attribute.name$> = [<$Attribute.defaultValueDesc$> retain];
+					<$endif$>
+				<$endif$>
 			}
 			<$endif$>
 		}
@@ -66,9 +82,12 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 			[mapping addEntriesFromDictionary:@{@"<$Relationship.name$>", tmpKey}];
 			tmpValue = [attributes valueForKeyPath:tmpKey];
 			if (![tmpValue isEqual:[NSNull null]]) {
-				self.<$Relationship.name$> = tmpValue;
-			}
+			<$if TemplateVar.arc$>
+				_<$Relationship.name$> = tmpValue;
+			<$else$>
+				_<$Relationship.name$> = [tmpValue retain];
 			<$endif$>
+			}
 		}
 <$endforeach$>
 <$endif$>
@@ -80,11 +99,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 <$if hasCustomSuperentityObject$>
 	self = [super initWithCoder:coder];
 <$else$>
-	<$if hasCustomBaseObjectCaseImport$>
-	self = [super initWithCoder:coder];
-	<$else$>
 	self = [self init];
-	<$endif$>
 <$endif$>
 	if (self) {
 //loop atribute
@@ -99,7 +114,6 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 <$if noninheritedRelationships.@count > 0$>
 <$foreach Relationship noninheritedRelationships do$>
 		self.<$Relationship.name$> = [coder decodeObjectForKey:@"<$Relationship.name$>"];
-
 <$endforeach$>
 <$endif$>
 	}
@@ -109,10 +123,6 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 - (void)encodeWithCoder:(NSCoder *)coder {
 <$if hasCustomSuperentityObject$>
 	[super encodeWithCoder:coder];
-<$else$>
-<$if hasCustomBaseObjectCaseImport$>
-	[super encodeWithCoder:coder];
-<$endif$>
 <$endif$>
 
 //loop atribute
@@ -132,12 +142,10 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-<$if !hasCustomSuperentityObject$>
-	<$if !hasCustomBaseObjectCaseImport$>
-	<$managedObjectMappingClassNameWithSuffix$> *aObject = [[self.class allocWithZone:zone] init];
-	<$else$>
+<$if hasCustomSuperentityObject$>
 	<$managedObjectMappingClassNameWithSuffix$> *aObject = [super copyWithZone:zone];
-	<$endif$>
+<$else$>
+	<$managedObjectMappingClassNameWithSuffix$> *aObject = [[self.class allocWithZone:zone] init];
 <$endif$>
 //loop atribute
 <$if noninheritedAttributes.@count > 0$>
@@ -155,7 +163,6 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 <$endif$>
 	return aObject;
 }
-
 
 <$foreach Relationship noninheritedRelationships do$>
 //one-many relationShip
@@ -179,9 +186,18 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 	<$endif$>
 <$endforeach do$>
 
-
-
-
-
+<$if !TemplateVar.arc$>
+- (void)dealloc {
+<$foreach Attribute noninheritedAttributes do$>
+<$if Attribute.hasDefinedAttributeType$>
+	[_<$Attribute.name$> release];
+<$endif$>
+<$endforeach$>
+<$foreach Relationship noninheritedRelationships do$>
+	[_<$Relationship.name$> release];
+<$endforeach$>
+	[super dealloc];
+}
+<$endif$>
 @end
 
