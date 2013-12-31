@@ -30,7 +30,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 
 @implementation _<$managedObjectMappingClassNameWithSuffix$>
 
-- (id)initWithAttributes:(NSDictionary *)attributes {
+- (instancetype)initWithAttributes:(NSDictionary *)attributes {
 <$if hasCustomSuperentityObject$>
 	if (self = [super initWithAttributes:attributes]) {
 <$else$>
@@ -91,6 +91,46 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 		}
 <$endforeach$>
 <$endif$>
+	}
+	return self;
+}
+
+- (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>InContext:(NSManagedObjectContext *)context {
+	<$managedObjectClassName$> *mo = [<$managedObjectClassName$> MR_createInContext:context];
+<$foreach Attribute noninheritedAttributes do$>
+<$if Attribute.hasDefinedAttributeType$>
+	mo.<$Attribute.name$> = self.<$Attribute.name$>;
+<$endif$>
+<$endforeach$>
+<$foreach Relationship noninheritedRelationships do$>
+	mo.<$Relationship.name$> = self.<$Relationship.name$>;
+<$endforeach$>
+	return mo;
+}
+
+- (instancetype)initWith<$managedObjectClassName.initialCapitalString$>:(<$managedObjectClassName$> *)mo {
+	self = [self init];
+	if (self) {
+<$foreach Attribute noninheritedAttributes do$>
+<$if Attribute.hasDefinedAttributeType$>
+	<$if TemplateVar.arc$>
+		_<$Attribute.name$> = mo.<$Attribute.name$>;
+	<$else$>
+		<$if Attribute.isObjectAttributeStringType$>
+		_<$Attribute.name$> = [mo.<$Attribute.name$> copy];
+		<$else$>
+		_<$Attribute.name$> = [[mo.<$Attribute.name$> retain];
+		<$endif$>
+	<$endif$>
+<$endif$>
+<$endforeach$>
+<$foreach Relationship noninheritedRelationships do$>
+	<$if TemplateVar.arc$>
+		_<$Relationship.name$> = mo.<$Relationship.name$>;
+	<$else$>
+		_<$Relationship.name$> = [mo.<$Relationship.name$> retain];
+	<$endif$>
+<$endforeach$>
 	}
 	return self;
 }

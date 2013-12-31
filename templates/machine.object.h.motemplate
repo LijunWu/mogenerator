@@ -28,7 +28,9 @@ extern const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.na
 @interface _<$managedObjectMappingClassNameWithSuffix$> : <$customSuperentityObject$> {}
 
 //super class need to have this method.
-- (id)initWithAttributes:(NSDictionary *)attributes;
+- (instancetype)initWithAttributes:(NSDictionary *)attributes;
+- (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>InContext:(NSManagedObjectContext *)context;
+- (instancetype)initWith<$managedObjectClassName.initialCapitalString$>:(<$managedObjectClassName$> *)mo;
 
 <$if TemplateVar.arc$>
 @property (nonatomic, strong, readonly) NSDictionary *mapping;

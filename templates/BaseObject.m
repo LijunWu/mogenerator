@@ -2,7 +2,7 @@
 
 @implementation BaseObject
 
-- (id)initWithAttributes:(NSDictionary *)attributes {
+- (instancetype)initWithAttributes:(NSDictionary *)attributes {
     if (self = [self init]) {
     }
     return self;
@@ -33,7 +33,7 @@
     return results;
 }
 
-+ (id)objectFromJSONObject:(NSDictionary *)aJSONObject {
++ (instancetype)objectFromJSONObject:(NSDictionary *)aJSONObject {
     return ((aJSONObject) ? [[[self alloc] initWithAttributes:aJSONObject] autorelease] : nil);
 }
 

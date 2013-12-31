@@ -2,10 +2,10 @@
 
 @interface BaseObject : NSObject <NSCoding, NSCopying>
 
-- (id)initWithAttributes:(NSDictionary *)attributes;
+- (instancetype)initWithAttributes:(NSDictionary *)attributes;
 - (NSDictionary *)dictionaryForSerialization;
 
 + (NSArray *)objectsFromJSONObjects:(NSArray *)aJSONObjects;
-+ (id)objectFromJSONObject:(NSDictionary *)aJSONObject;
++ (instancetype)objectFromJSONObject:(NSDictionary *)aJSONObject;
 
 @end
