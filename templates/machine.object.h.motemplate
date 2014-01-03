@@ -31,6 +31,7 @@ extern const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.na
 - (instancetype)initWithAttributes:(NSDictionary *)attributes;
 - (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>InContext:(NSManagedObjectContext *)context;
 - (instancetype)initWith<$managedObjectClassName.initialCapitalString$>:(<$managedObjectClassName$> *)mo;
+- (void)updateWithAttributes:(NSDictionary *)attributes;   //use the same mapping
 
 <$if TemplateVar.arc$>
 @property (nonatomic, strong, readonly) NSDictionary *mapping;

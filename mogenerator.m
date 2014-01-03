@@ -698,7 +698,7 @@ NSString  *gObjectClassSuffix;
     NSUInteger count = [mapKeys count];
     for (int i = 0; i < count; i++) {
         mk = mapKeys[i];
-        [ret appendFormat:@"@\"%@\": @(1)", mk];
+        [ret appendFormat:@"@\"%@\": @\"%@\"", mk, mk];
         if (i != count - 1) {
             [ret appendString:@"; "];
         }

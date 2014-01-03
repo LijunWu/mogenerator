@@ -36,14 +36,14 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 <$else$>
 	if (self = [self init]) {
 <$endif$>
-		NSString *tmpValue = nil;
+		id tmpValue = nil;
 		NSString *tmpKey = nil;
-		NSMutableDictionary *tmpMapping = [NSMutableDictionary dictionary];
 //loop atribute
 <$if noninheritedAttributes.@count > 0$>
 <$foreach Attribute noninheritedAttributes do$>
 <$if Attribute.hasDefinedAttributeType$>
-		tmpKey = <$if Attribute.objectAttributeMapKeys.@count > 1$>[<$Attribute.objectAttributeMapKeysDesc$> valueForKeyPath:@"<$Attribute.name$>"]<$else$>@"<$Attribute.name$>"<$endif$>;
+	<$if Attribute.objectAttributeMapKeys.@count > 1$>
+		tmpKey = [<$Attribute.objectAttributeMapKeysDesc$> valueForKey:@"<$Attribute.name$>"];
 		if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
 			[mapping addEntriesFromDictionary:@{@"<$Attribute.name$>", tmpKey}];
 			tmpValue = [attributes valueForKeyPath:tmpKey];
@@ -71,24 +71,77 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 			}
 			<$endif$>
 		}
+	<$else$>
+		tmpKey = @"<$Attribute.name$>";
+		[mapping addEntriesFromDictionary:@{@"<$Attribute.name$>", tmpKey}];
+		tmpValue = [attributes valueForKeyPath:tmpKey];
+		if (![tmpValue isEqual:[NSNull null]]) {
+		<$if TemplateVar.arc$>
+			_<$Attribute.name$> = tmpValue;
+		<$else$>
+			<$if Attribute.isObjectAttributeStringType$>
+			_<$Attribute.name$> = [tmpValue copy];
+			<$else$>
+			_<$Attribute.name$> = [tmpValue retain];
+			<$endif$>
+		<$endif$>
+		}
+		<$if Attribute.hasDefaultValue$>else {
+			<$if TemplateVar.arc$>
+			_<$Attribute.name$> = <$Attribute.defaultValueDesc$>;
+			<$else$>
+				<$if Attribute.isObjectAttributeStringType$>
+			_<$Attribute.name$> = [<$Attribute.defaultValueDesc$> copy];
+				<$else$>
+			_<$Attribute.name$> = [<$Attribute.defaultValueDesc$> retain];
+				<$endif$>
+			<$endif$>
+		}
+		<$endif$>
+	<$endif$>
 <$endif$>
 <$endforeach$>
 <$endif$>
 //loop relationShip
 <$if noninheritedRelationships.@count > 0$>
 <$foreach Relationship noninheritedRelationships do$>
-		tmpKey = <$if Relationship.objectRelationshipMapKeys.@count > 1$>[<$Relationship.objectRelationshipMapKeysDesc$> valueForKeyPath:@"<$Relationship.name$>"]<$else$>@"<$Relationship.name$>"<$endif$>;
+	<$if Relationship.objectRelationshipMapKeys.@count > 1$>
+		tmpKey = [<$Relationship.objectRelationshipMapKeysDesc$> valueForKey:@"<$Relationship.name$>"];
 		if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
 			[mapping addEntriesFromDictionary:@{@"<$Relationship.name$>", tmpKey}];
 			tmpValue = [attributes valueForKeyPath:tmpKey];
 			if (![tmpValue isEqual:[NSNull null]]) {
-			<$if TemplateVar.arc$>
-				_<$Relationship.name$> = tmpValue;
+			<$if !Relationship.isToMany$>
+				_<$Relationship.name$> = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:tmpValue];
 			<$else$>
-				_<$Relationship.name$> = [tmpValue retain];
+				NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:tmpValue.count];
+				<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
+				for (NSDictionary *d in tmpValue) {
+					tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:tmpValue];
+					[tmpArr addObject:tmpObj];
+				}
+				_<$Relationship.name$> = [NSArray arrayWithArray:tmpArr];
 			<$endif$>
 			}
 		}
+	<$else$>
+		tmpKey = @"<$Relationship.name$>";
+		[mapping addEntriesFromDictionary:@{@"<$Relationship.name$>", tmpKey}];
+		tmpValue = [attributes valueForKeyPath:tmpKey];
+		if (![tmpValue isEqual:[NSNull null]]) {
+		<$if !Relationship.isToMany$>
+			_<$Relationship.name$> = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:tmpValue];
+		<$else$>
+			NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:tmpValue.count];
+			<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
+			for (NSDictionary *d in tmpValue) {
+				tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:tmpValue];
+				[tmpArr addObject:tmpObj];
+			}
+			_<$Relationship.name$> = [NSArray arrayWithArray:tmpArr];
+		<$endif$>
+		}
+	<$endif$>
 <$endforeach$>
 <$endif$>
 	}
@@ -135,6 +188,43 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 	return self;
 }
 
+- (void)updateWithAttributes:(NSDictionary *)attributes {
+	NSString *tmpKey = nil;
+	id tmpValue = nil;
+<$foreach Attribute noninheritedAttributes do$>
+<$if Attribute.hasDefinedAttributeType$>
+	tmpKey = [self.mapping valueForKey:<$Attribute.name$>];
+	if (![tmpKey isEqual:[NSNull null]]) {
+		tmpValue = [attributes valueForKeyPath:tmpKey];
+		if (![tmpValue isEqual:[NSNull null]]) {
+			self.<$Attribute.name$> = tmpValue;
+		}
+	}
+<$endif$>
+<$endforeach$>
+<$foreach Relationship noninheritedRelationships do$>
+	tmpKey = [self.mapping valueForKey:<$Relationship.name$>];
+	if (![tmpKey isEqual:[NSNull null]]) {
+		tmpValue = [attributes valueForKeyPath:tmpKey];
+		if (![tmpValue isEqual:[NSNull null]]) {
+			<$if !Relationship.isToMany$>
+			[self.<$Attribute.name$> updateWithAttributes:tmpValue];
+			<$else$>
+			NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:tmpValue.count];
+			<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
+			for (NSDictionary *d in tmpValue) {
+				tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:tmpValue];
+				[tmpArr addObject:tmpObj];
+			}
+			self.<$Relationship.name$> = [NSArray arrayWithArray:tmpArr];
+			<$endif$>
+		}
+	}
+<$endforeach$>
+}
+
+//////////////////////////////////////////////////////////////////
+#pragma mark - NSCoding
 - (id)initWithCoder:(NSCoder *)coder {
 <$if hasCustomSuperentityObject$>
 	self = [super initWithCoder:coder];
@@ -181,6 +271,8 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 <$endif$>
 }
 
+//////////////////////////////////////////////////////////////////
+#pragma mark - NSCoping
 - (id)copyWithZone:(NSZone *)zone {
 <$if hasCustomSuperentityObject$>
 	<$managedObjectMappingClassNameWithSuffix$> *aObject = [super copyWithZone:zone];
