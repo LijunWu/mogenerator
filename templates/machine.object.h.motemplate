@@ -9,20 +9,16 @@
 #define <$managedObjectMappingClassNameWithSuffix$>Relationships <$managedObjectClassName$>Relationships
 
 //property mapping according to MagicalRecord
-<$foreach Attribute noninheritedAttributes do$>
-	<$if Attribute.objectAttributeMapKeys.@count > 0$>
+<$foreach Attribute noninheritedAttributes do$><$if Attribute.objectAttributeMapKeys.@count > 0$>
 extern const struct <$managedObjectMappingClassNameWithSuffix$><$Attribute.name.initialCapitalString$>MapKeys {<$foreach Key Attribute.objectAttributeMapKeys do$>
 	<$if TemplateVar.arc$>__unsafe_unretained<$endif$> NSString *<$Key.mapKeyName$>;<$endforeach do$>
-} <$managedObjectMappingClassNameWithSuffix$><$Attribute.name.initialCapitalString$>MapKeys;
-	<$endif$>
+} <$managedObjectMappingClassNameWithSuffix$><$Attribute.name.initialCapitalString$>MapKeys;<$endif$>
 <$endforeach do$>
 
-<$foreach Relationship noninheritedRelationships do$>
-	<$if Relationship.objectRelationshipMapKeys.@count > 0$>
+<$foreach Relationship noninheritedRelationships do$><$if Relationship.objectRelationshipMapKeys.@count > 0$>
 extern const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.initialCapitalString$>MapKeys {<$foreach Key Relationship.objectRelationshipMapKeys do$>
 	<$if TemplateVar.arc$>__unsafe_unretained<$endif$> NSString *<$Key.mapKeyName$>;<$endforeach do$>
-} <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.initialCapitalString$>MapKeys;
-	<$endif$>
+} <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.initialCapitalString$>MapKeys;<$endif$>
 <$endforeach do$>
 	
 @interface _<$managedObjectMappingClassNameWithSuffix$> : <$customSuperentityObject$> {}
@@ -34,51 +30,34 @@ extern const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.na
 - (void)updateWithAttributes:(NSDictionary *)attributes;   //use the same mapping
 
 <$if TemplateVar.arc$>
-@property (nonatomic, strong, readonly) NSDictionary *mapping;
-<$else$>
+@property (nonatomic, strong, readonly) NSDictionary *mapping;<$else$>
 @property (nonatomic, retain, readonly) NSDictionary *mapping;
 <$endif$>
 
 //loop Attribute
-<$foreach Attribute noninheritedAttributes do$>
-<$if Attribute.hasDefinedAttributeType$>
-<$if TemplateVar.arc$>
-@property (nonatomic, <$if Attribute.isObjectAttributeStringType$>copy<$else$>strong<$endif$>>) <$Attribute.objectAttributeType$> <$Attribute.name$>;
-<$else$>
-@property (nonatomic, <$if Attribute.isObjectAttributeStringType$>copy<$else$>retain<$endif$>) <$Attribute.objectAttributeType$> <$Attribute.name$>;
-<$endif$>
-<$endif$>
+<$foreach Attribute noninheritedAttributes do$><$if Attribute.hasDefinedAttributeType$><$if TemplateVar.arc$>
+@property (nonatomic, <$if Attribute.isObjectAttributeStringType$>copy<$else$>strong<$endif$>>) <$Attribute.objectAttributeType$> <$Attribute.name$>;<$else$>
+@property (nonatomic, <$if Attribute.isObjectAttributeStringType$>copy<$else$>retain<$endif$>) <$Attribute.objectAttributeType$> <$Attribute.name$>;<$endif$><$endif$>
 <$if Attribute.hasScalarAttributeType$>
 @property (atomic) <$Attribute.scalarAttributeType$> <$Attribute.name$>Value;
 - (<$Attribute.scalarAttributeType$>)<$Attribute.name$>Value;
-- (void)set<$Attribute.name.initialCapitalString$>Value:(<$Attribute.scalarAttributeType$>)value_;
-<$endif$>
+- (void)set<$Attribute.name.initialCapitalString$>Value:(<$Attribute.scalarAttributeType$>)value_;<$endif$>
 <$endforeach do$>
 
 /* loop Relationship
  * if one-many, use customized accessors to access immutable collection
  */
-<$foreach Relationship noninheritedRelationships do$>
-<$if Relationship.isToMany$>
-<$if TemplateVar.arc$>
-@property (nonatomic, strong) <$Relationship.immutableUnorderedCollectionClassName$> *<$Relationship.name$>;
-<$else$>
-@property (nonatomic, retain) <$Relationship.immutableUnorderedCollectionClassName$> *<$Relationship.name$>;
-<$endif$>
+<$foreach Relationship noninheritedRelationships do$><$if Relationship.isToMany$><$if TemplateVar.arc$>
+@property (nonatomic, strong) <$Relationship.immutableUnorderedCollectionClassName$> *<$Relationship.name$>;<$else$>
+@property (nonatomic, retain) <$Relationship.immutableUnorderedCollectionClassName$> *<$Relationship.name$>;<$endif$>
 
 - (<$Relationship.mutableUnorderedCollectionClassName$>*)<$Relationship.name$>Array;
 - (void)add<$Relationship.name.initialCapitalString$>:(<$Relationship.immutableUnorderedCollectionClassName$>*)value_;
 - (void)remove<$Relationship.name.initialCapitalString$>:(<$Relationship.immutableUnorderedCollectionClassName$>*)value_;
 - (void)add<$Relationship.name.initialCapitalString$>Object:(<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$>*)value_;
-- (void)remove<$Relationship.name.initialCapitalString$>Object:(<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$>*)value_;
-
-<$else$>
-<$if TemplateVar.arc$>
-@property (nonatomic, strong) <$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *<$Relationship.name$>;
-<$else$>
-@property (nonatomic, retain) <$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *<$Relationship.name$>;
-<$endif$>
-<$endif$>
+- (void)remove<$Relationship.name.initialCapitalString$>Object:(<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$>*)value_;<$else$><$if TemplateVar.arc$>
+@property (nonatomic, strong) <$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *<$Relationship.name$>;<$else$>
+@property (nonatomic, retain) <$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *<$Relationship.name$>;<$endif$><$endif$>
 <$endforeach do$>
 
 @end
