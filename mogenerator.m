@@ -387,9 +387,15 @@ NSString  *gObjectClassSuffix;
     return gCustomBaseObjectClassImport == nil ? NO : YES;
 }
 
-//- (BOOL)objectClassOnly {
-//    
-//}
+- (BOOL)objectClassOnly {
+    NSNumber* ret = [[self userInfo] objectForKey:@"mogenerator.objectClassOnly"];
+    if (ret && [ret boolValue] == YES) {
+        return YES;
+    }
+    else {
+        return NO;
+    }
+}
 
 - (BOOL)hasCustomObjectClass {
     NSString *entityClassName = [self managedObjectClassName];

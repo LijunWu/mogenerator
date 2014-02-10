@@ -3,11 +3,25 @@
 // baseObjectClass confirm to NSCopying and NSCoding default
 <$if hasCustomSuperentityObject$><$if hasSuperentity$>#import "<$customSuperentityObject$>.h"
 <$else$><$if hasCustomBaseObjectCaseImport$>#import <$baseObjectClassImport$><$else$>#import "<$customSuperentityObject$>.h"<$endif$><$endif$><$endif$>
-#import "<$managedObjectClassName$>.h"
+<$if !objectClassOnly$>#import "<$managedObjectClassName$>.h"<$endif$>
 
+<$if !objectClassOnly$>
 //property
 #define <$managedObjectMappingClassNameWithSuffix$>Attributes <$managedObjectClassName$>Attributes
 #define <$managedObjectMappingClassNameWithSuffix$>Relationships <$managedObjectClassName$>Relationships
+<$else$>
+<$if noninheritedAttributes.@count > 0$>
+extern const struct <$managedObjectMappingClassNameWithSuffix$>Attributes {<$foreach Attribute noninheritedAttributes do$>
+	<$if TemplateVar.arc$>__unsafe_unretained<$endif$> NSString *<$Attribute.name$>;<$endforeach do$>
+} <$managedObjectMappingClassNameWithSuffix$>Attributes;
+<$endif$>
+
+<$if noninheritedRelationships.@count > 0$>
+extern const struct <$managedObjectMappingClassNameWithSuffix$>Relationships {<$foreach Relationship noninheritedRelationships do$>
+	<$if TemplateVar.arc$>__unsafe_unretained<$endif$> NSString *<$Relationship.name$>;<$endforeach do$>
+} <$managedObjectMappingClassNameWithSuffix$>Relationships;
+<$endif$>
+<$endif$>
 
 //property mapping according to MagicalRecord
 <$foreach Attribute noninheritedAttributes do$><$if Attribute.objectAttributeMapKeys.@count > 0$>
@@ -26,8 +40,10 @@ extern const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.na
 
 //super class need to have this method.
 - (instancetype)initWithAttributes:(NSDictionary *)attributes;
+<$if !objectClassOnly$>
 - (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>InContext:(NSManagedObjectContext *)context;
 - (instancetype)initWith<$managedObjectClassName.initialCapitalString$>:(<$managedObjectClassName$> *)mo;
+<$endif$>
 - (void)updateWithAttributes:(NSDictionary *)attributes;   //use the same mapping
 
 <$if TemplateVar.arc$>

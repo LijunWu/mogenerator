@@ -3,6 +3,20 @@
 
 #import "_<$managedObjectMappingClassNameWithSuffix$>.h"
 
+<$if objectClassOnly$>
+<$if noninheritedAttributes.@count > 0$>
+const struct <$managedObjectMappingClassNameWithSuffix$>Attributes <$managedObjectMappingClassNameWithSuffix$>Attributes = {<$foreach Attribute noninheritedAttributes do$>
+	.<$Attribute.name$> = @"<$Attribute.name$>",<$endforeach do$>
+};
+<$endif$>
+
+<$if noninheritedRelationships.@count > 0$>
+const struct <$managedObjectMappingClassNameWithSuffix$>Relationships <$managedObjectMappingClassNameWithSuffix$>Relationships = {<$foreach Relationship noninheritedRelationships do$>
+	.<$Relationship.name$> = @"<$Relationship.name$>",<$endforeach do$>
+};
+<$endif$>
+<$endif$>
+
 //property mapping according to MagicalRecord
 <$foreach Attribute noninheritedAttributes do$><$if Attribute.objectAttributeMapKeys.@count > 0$>
 const struct <$managedObjectMappingClassNameWithSuffix$><$Attribute.name.initialCapitalString$>MapKeys <$managedObjectMappingClassNameWithSuffix$><$Attribute.name.initialCapitalString$>MapKeys = {<$foreach Key Attribute.objectAttributeMapKeys do$>
@@ -111,6 +125,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 	return self;
 }
 
+<$if !objectClassOnly$>
 - (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>InContext:(NSManagedObjectContext *)context {
 	<$managedObjectClassName$> *mo = [<$managedObjectClassName$> MR_createInContext:context];
 <$foreach Attribute noninheritedAttributes do$><$if Attribute.hasDefinedAttributeType$>
@@ -137,6 +152,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 	}
 	return self;
 }
+<$endif$>
 
 - (void)updateWithAttributes:(NSDictionary *)attributes {
 	NSString *tmpKey = nil;
