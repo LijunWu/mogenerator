@@ -3,6 +3,7 @@
 // baseObjectClass confirm to NSCopying and NSCoding default
 <$if hasCustomSuperentityObject$><$if hasSuperentity$>#import "<$customSuperentityObject$>.h"
 <$else$><$if hasCustomBaseObjectCaseImport$>#import <$baseObjectClassImport$><$else$>#import "<$customSuperentityObject$>.h"<$endif$><$endif$><$endif$>
+#import "<$managedObjectClassName$>.h"
 
 //property
 #define <$managedObjectMappingClassNameWithSuffix$>Attributes <$managedObjectClassName$>Attributes
@@ -36,7 +37,7 @@ extern const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.na
 
 //loop Attribute
 <$foreach Attribute noninheritedAttributes do$><$if Attribute.hasDefinedAttributeType$><$if TemplateVar.arc$>
-@property (nonatomic, <$if Attribute.isObjectAttributeStringType$>copy<$else$>strong<$endif$>>) <$Attribute.objectAttributeType$> <$Attribute.name$>;<$else$>
+@property (nonatomic, <$if Attribute.isObjectAttributeStringType$>copy<$else$>strong<$endif$>) <$Attribute.objectAttributeType$> <$Attribute.name$>;<$else$>
 @property (nonatomic, <$if Attribute.isObjectAttributeStringType$>copy<$else$>retain<$endif$>) <$Attribute.objectAttributeType$> <$Attribute.name$>;<$endif$><$endif$>
 <$if Attribute.hasScalarAttributeType$>
 @property (atomic) <$Attribute.scalarAttributeType$> <$Attribute.name$>Value;

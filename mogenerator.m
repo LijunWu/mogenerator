@@ -387,6 +387,10 @@ NSString  *gObjectClassSuffix;
     return gCustomBaseObjectClassImport == nil ? NO : YES;
 }
 
+//- (BOOL)objectClassOnly {
+//    
+//}
+
 - (BOOL)hasCustomObjectClass {
     NSString *entityClassName = [self managedObjectClassName];
     BOOL result = !([entityClassName isEqualToString:@"NSManagedObject"]
@@ -431,6 +435,23 @@ NSString  *gObjectClassSuffix;
 - (NSString*)forcedCustomBaseObjectClass {
     NSString* userInfoCustomBaseObjectClass = [[self userInfo] objectForKey:@"mogenerator.customBaseObjectClass"];
     return userInfoCustomBaseObjectClass ? userInfoCustomBaseObjectClass : gCustomBaseObjectClassForced;
+}
+
+- (NSString *)objectAttributeMapKeysDesc{
+    NSMutableString *ret = [NSMutableString string];
+    [ret appendString:@"@{"];
+    NSString *mk = nil;
+    NSArray *arr = self.noninheritedAttributes;
+    NSUInteger count = [arr count];
+    for (int i = 0; i < count; i++) {
+        mk = [(NSAttributeDescription *)arr[i] name];
+        [ret appendFormat:@"@\"%@\": @\"%@\"", mk, mk];
+        if (i != count - 1) {
+            [ret appendString:@", "];
+        }
+    }
+    [ret appendString:@"}"];
+    return [NSString stringWithString:ret];
 }
 
 @end
@@ -700,7 +721,7 @@ NSString  *gObjectClassSuffix;
         mk = mapKeys[i];
         [ret appendFormat:@"@\"%@\": @\"%@\"", mk, mk];
         if (i != count - 1) {
-            [ret appendString:@"; "];
+            [ret appendString:@", "];
         }
     }
     [ret appendString:@"}"];

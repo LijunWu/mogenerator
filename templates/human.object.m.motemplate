@@ -1,4 +1,4 @@
-#import "_<$managedObjectMappingClassNameWithSuffix$>.h"
+#import "<$managedObjectMappingClassNameWithSuffix$>.h"
 
 @interface <$managedObjectMappingClassNameWithSuffix$> ()
 
