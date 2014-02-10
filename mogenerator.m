@@ -1609,7 +1609,7 @@ NSString *ApplicationSupportSubdirectoryName = @"mogenerator";
 
     if (!_listSourceFiles) {
         if (_objectModel) {
-            printf("%d machine files%s %d human files%s %d machine files%s %d human files%s generated.\n",
+            printf("%d machine files%s %d human files%s %d machine-object files%s %d human-object files%s generated.\n",
                    machineFilesGenerated, (mfileGenerated ? "," : " and"),
                    humanFilesGenerated, (mfileGenerated ? "," : " and"),
                    machineObjectFilesGenerated, (mfileGenerated ? "," : " and"),
