@@ -172,7 +172,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 		tmpValue = [attributes valueForKeyPath:tmpKey];
 		if (![tmpValue isEqual:[NSNull null]]) {<$if !Relationship.isToMany$>
 			[self.<$Attribute.name$> updateWithAttributes:tmpValue];<$else$>
-			NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:tmpValue.count];
+			NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:[(NSArray *)tmpValue count]];
 			<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
 			for (NSDictionary *d in tmpValue) {
 				tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:tmpValue];

@@ -35,6 +35,9 @@ extern const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.na
 	<$if TemplateVar.arc$>__unsafe_unretained<$endif$> NSString *<$Key.mapKeyName$>;<$endforeach do$>
 } <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.initialCapitalString$>MapKeys;<$endif$>
 <$endforeach do$>
+
+<$foreach Relationship noninheritedRelationships do$>@class <$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$>;
+<$endforeach do$>
 	
 @interface _<$managedObjectMappingClassNameWithSuffix$> : <$customSuperentityObject$> {}
 
