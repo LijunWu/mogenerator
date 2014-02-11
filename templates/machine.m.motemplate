@@ -74,13 +74,13 @@ const struct <$managedObjectClassName$>UserInfo <$managedObjectClassName$>UserIn
 	return [result <$Attribute.scalarAccessorMethodName$>];
 }
 
-<$if ! Attribute.isReadonly$>
+<$if !Attribute.isReadonly$>
 - (void)set<$Attribute.name.initialCapitalString$>Value:(<$Attribute.scalarAttributeType$>)value_ {
 	[self set<$Attribute.name.initialCapitalString$>:<$if TemplateVar.literals$>@(value_)<$else$>[NSNumber <$Attribute.scalarFactoryMethodName$>value_]<$endif$>];
 }
 <$endif$>
 
-<$if Attribute.name != "type"$>
+<$if !Attribute.isSansType$>
 - (<$Attribute.scalarAttributeType$>)primitive<$Attribute.name.initialCapitalString$>Value {
 	NSNumber *result = [self primitive<$Attribute.name.initialCapitalString$>];
 	return [result <$Attribute.scalarAccessorMethodName$>];
@@ -89,6 +89,8 @@ const struct <$managedObjectClassName$>UserInfo <$managedObjectClassName$>UserIn
 - (void)setPrimitive<$Attribute.name.initialCapitalString$>Value:(<$Attribute.scalarAttributeType$>)value_ {
 	[self setPrimitive<$Attribute.name.initialCapitalString$>:<$if TemplateVar.literals$>@(value_)<$else$>[NSNumber <$Attribute.scalarFactoryMethodName$>value_]<$endif$>];
 }
+<$endif$>
+
 <$endif$>
 <$endif$>
 <$endif$>

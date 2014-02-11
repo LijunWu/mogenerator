@@ -678,6 +678,32 @@ NSString  *gObjectClassSuffix;
 #pragma mark - NSAttributeDescription (objectClassTyping) -
 @implementation NSAttributeDescription (objectClassTyping)
 
+- (BOOL)isSansType {
+    NSArray *sansTypes = @[
+                           @"value",
+                           @"isEqual",
+                           @"hash",
+                           @"superclass",
+                           @"class",
+                           @"zone",
+                           @"isProxy",
+                           @"managedObjectContext",
+                           @"entity",
+                           @"objectID",
+                           @"isInserted",
+                           @"isUpdated",
+                           @"isDeleted",
+                           @"isFault",
+                           @"type"
+                           ];
+    for (NSString *type in sansTypes) {
+        if ([self.name isEqualToString:type]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 - (BOOL)isObjectAttributeStringType {
     NSString *result = [self objectAttributeType];
     return [result isEqualToString:@"NSString*"];

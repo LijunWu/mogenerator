@@ -44,8 +44,8 @@ extern const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.na
 //super class need to have this method.
 - (instancetype)initWithAttributes:(NSDictionary *)attributes;
 <$if !objectClassOnly$>
-- (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>InContext:(NSManagedObjectContext *)context;
-- (instancetype)initWith<$managedObjectClassName.initialCapitalString$>:(<$managedObjectClassName$> *)mo;
+- (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>ExceptRelationShipInContext:(NSManagedObjectContext *)context;
+- (instancetype)initWith<$managedObjectClassName.initialCapitalString$>ExceptRelationShip:(<$managedObjectClassName$> *)mo;
 <$endif$>
 - (void)updateWithAttributes:(NSDictionary *)attributes;   //use the same mapping
 
