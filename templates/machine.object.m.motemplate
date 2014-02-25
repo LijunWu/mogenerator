@@ -65,7 +65,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 		if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
 			[mapping addEntriesFromDictionary:@{@"<$Attribute.name$>": tmpKey}];
 			tmpValue = [attributes valueForKeyPath:tmpKey];
-			if (![tmpValue isEqual:[NSNull null]]) {
+			if (tmpValue && ![tmpValue isEqual:[NSNull null]]) {
 				<$if TemplateVar.arc$>_<$Attribute.name$> = tmpValue;<$else$><$if Attribute.isObjectAttributeStringType$>
 				_<$Attribute.name$> = [tmpValue copy];<$else$>
 				_<$Attribute.name$> = [tmpValue retain];<$endif$>
@@ -80,7 +80,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 		tmpKey = @"<$Attribute.name$>";
 		[mapping addEntriesFromDictionary:@{@"<$Attribute.name$>": tmpKey}];
 		tmpValue = [attributes valueForKeyPath:tmpKey];
-		if (![tmpValue isEqual:[NSNull null]]) {<$if TemplateVar.arc$>
+		if (tmpValue && ![tmpValue isEqual:[NSNull null]]) {<$if TemplateVar.arc$>
 			_<$Attribute.name$> = tmpValue;<$else$><$if Attribute.isObjectAttributeStringType$>
 			_<$Attribute.name$> = [tmpValue copy];<$else$>
 			_<$Attribute.name$> = [tmpValue retain];<$endif$><$endif$>
@@ -97,7 +97,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 		if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
 			[mapping addEntriesFromDictionary:@{@"<$Relationship.name$>": tmpKey}];
 			tmpValue = [attributes valueForKeyPath:tmpKey];
-			if (![tmpValue isEqual:[NSNull null]]) {<$if !Relationship.isToMany$>
+			if (tmpValue && ![tmpValue isEqual:[NSNull null]]) {<$if !Relationship.isToMany$>
 				_<$Relationship.name$> = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:tmpValue];<$else$>
 				NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:[(NSArray *)tmpValue count]];
 				<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
@@ -111,7 +111,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 		tmpKey = @"<$Relationship.name$>";
 		[mapping addEntriesFromDictionary:@{@"<$Relationship.name$>": tmpKey}];
 		tmpValue = [attributes valueForKeyPath:tmpKey];
-		if (![tmpValue isEqual:[NSNull null]]) {<$if !Relationship.isToMany$>
+		if (tmpValue && ![tmpValue isEqual:[NSNull null]]) {<$if !Relationship.isToMany$>
 			_<$Relationship.name$> = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:tmpValue];<$else$>
 			NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:[(NSArray *)tmpValue count]];
 			<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
@@ -152,6 +152,12 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 		<$endif$>
 	<$endif$>
 <$endforeach$>
+<$foreach Relationship noninheritedRelationships do$>
+	<$if Relationship.isToMany$>
+		_<$Relationship.name$> = [NSArray array];
+	<$endif$>
+<$endforeach$>
+
 	}
 	return self;
 }
@@ -164,7 +170,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 	tmpKey = [self.mapping valueForKey:@"<$Attribute.name$>"];
 	if (![tmpKey isEqual:[NSNull null]]) {
 		tmpValue = [attributes valueForKeyPath:tmpKey];
-		if (![tmpValue isEqual:[NSNull null]]) {
+		if (tmpValue && ![tmpValue isEqual:[NSNull null]]) {
 			self.<$Attribute.name$> = tmpValue;
 		}
 	}<$endif$>
@@ -173,7 +179,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 	tmpKey = [self.mapping valueForKey:@"<$Relationship.name$>"];
 	if (![tmpKey isEqual:[NSNull null]]) {
 		tmpValue = [attributes valueForKeyPath:tmpKey];
-		if (![tmpValue isEqual:[NSNull null]]) {<$if !Relationship.isToMany$>
+		if (tmpValue && ![tmpValue isEqual:[NSNull null]]) {<$if !Relationship.isToMany$>
 			[self.<$Relationship.name$> updateWithAttributes:tmpValue];<$else$>
 			NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:[(NSArray *)tmpValue count]];
 			<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
