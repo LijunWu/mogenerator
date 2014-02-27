@@ -746,17 +746,17 @@ NSString  *gObjectClassSuffix;
 - (NSString *)objectAttributeMapKeysDesc {
     NSArray *mapKeys = [self objectAttributeMapKeys];
     NSMutableString *ret = [NSMutableString string];
-    [ret appendString:@"@{"];
+    [ret appendString:@"@["];
     NSString *mk = nil;
     NSUInteger count = [mapKeys count];
     for (int i = 0; i < count; i++) {
         mk = mapKeys[i];
-        [ret appendFormat:@"@\"%@\": @\"%@\"", mk, mk];
+        [ret appendFormat:@"@\"%@\"", mk];
         if (i != count - 1) {
             [ret appendString:@", "];
         }
     }
-    [ret appendString:@"}"];
+    [ret appendString:@"]"];
     return [NSString stringWithString:ret];
 }
 
@@ -840,17 +840,17 @@ NSString  *gObjectClassSuffix;
 - (NSString *)objectRelationshipMapKeysDesc {
     NSArray *mapKeys = [self objectRelationshipMapKeys];
     NSMutableString *ret = [NSMutableString string];
-    [ret appendString:@"@{"];
+    [ret appendString:@"@["];
     NSString *mk = nil;
     NSUInteger count = [mapKeys count];
     for (int i = 0; i < count; i++) {
         mk = mapKeys[i];
-        [ret appendFormat:@"@\"%@\": @(1)", mk];
+        [ret appendFormat:@"@\"%@\"", mk];
         if (i != count - 1) {
-            [ret appendString:@"; "];
+            [ret appendString:@", "];
         }
     }
-    [ret appendString:@"}"];
+    [ret appendString:@""];
     return [NSString stringWithString:ret];
 }
 
