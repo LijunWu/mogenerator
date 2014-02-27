@@ -45,7 +45,13 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 
 - (NSDictionary *)mapping {
 	if (!_mapping) {
+		<$if !hasSuperentity$>
 		_mapping = <$objectAttributeMapKeysDesc$>;
+		<$else$>
+        NSMutableDictionary *tmp = [NSMutableDictionary dictionaryWithDictionary:super.mapping];
+        [tmp addEntriesFromDictionary:<$objectAttributeMapKeysDesc$>];
+		_mapping = [NSDictionary dictionaryWithDictionary:tmp];
+		<$endif$>
 	}
 	return _mapping;
 }
@@ -59,7 +65,11 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 		id tmpValue = nil;
 		NSString *tmpKey = nil;
 		NSArray * __unused tmpMappedKeys = nil;
+		<$if !hasSuperentity$>
         NSMutableDictionary *mapping = [NSMutableDictionary dictionary];
+		<$else$>
+        NSMutableDictionary *mapping = [NSMutableDictionary dictionaryWithDictionary:super.mapping];
+		<$endif$>
 //loop atribute
 <$if noninheritedAttributes.@count > 0$>
 <$foreach Attribute noninheritedAttributes do$>
@@ -132,13 +142,14 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 			}
 			_<$Relationship.name$> = [NSArray arrayWithArray:tmpArr];<$endif$>
 		}<$endif$><$endforeach$>
-        self.mapping = [NSDictionary dictionaryWithDictionary:mapping];
 <$endif$>
+        self.mapping = [NSDictionary dictionaryWithDictionary:mapping];
 	}
 	return self;
 }
 
 <$if !objectClassOnly$>
+	<$if !hasSuperentity$>
 - (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>ExceptRelationShipInContext:(NSManagedObjectContext *)context {
 	<$managedObjectClassName$> *mo = [<$managedObjectClassName$> MR_createInContext:context];
 <$foreach Attribute noninheritedAttributes do$><$if Attribute.hasDefinedAttributeType$>
@@ -146,9 +157,12 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 <$endif$><$endforeach$>
 	return mo;
 }
-
+	<$endif$>
 - (instancetype)initWith<$managedObjectClassName.initialCapitalString$>ExceptRelationShip:(<$managedObjectClassName$> *)mo {
-	self = [self init];
+	<$if !hasSuperentity$>
+	self = [self init];<$else$>
+	self = [super initWith<$superentity.managedObjectClassName.initialCapitalString$>ExceptRelationShip:mo];
+	<$endif$>
 	if (self) {
 <$foreach Attribute noninheritedAttributes do$>
 	<$if Attribute.hasDefinedAttributeType$>
@@ -175,6 +189,8 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 <$endif$>
 
 - (void)updateWithAttributes:(NSDictionary *)attributes {
+	<$if hasSuperentity$>[super updateWithAttributes:attributes];<$endif$>
+	
 	NSString *tmpKey = nil;
 	id tmpValue = nil;
 <$foreach Attribute noninheritedAttributes do$><$if Attribute.hasDefinedAttributeType$>

@@ -39,12 +39,18 @@ extern const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.na
 <$foreach Relationship noninheritedRelationships do$>@class <$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$>;
 <$endforeach do$>
 	
-@interface _<$managedObjectMappingClassNameWithSuffix$> : <$customSuperentityObject$> {}
+@interface _<$managedObjectMappingClassNameWithSuffix$> : <$customSuperentityObject$> {
+<$if !hasSuperentity$>
+@public
+    NSDictionary *_mapping;
+<$endif$>
+}
 
 //super class need to have this method.
 - (instancetype)initWithAttributes:(NSDictionary *)attributes;
-<$if !objectClassOnly$>
-- (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>ExceptRelationShipInContext:(NSManagedObjectContext *)context;
+
+<$if !objectClassOnly$><$if !hasSuperentity$>
+- (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>ExceptRelationShipInContext:(NSManagedObjectContext *)context;<$endif$>
 - (instancetype)initWith<$managedObjectClassName.initialCapitalString$>ExceptRelationShip:(<$managedObjectClassName$> *)mo;
 <$endif$>
 - (void)updateWithAttributes:(NSDictionary *)attributes;   //use the same mapping
