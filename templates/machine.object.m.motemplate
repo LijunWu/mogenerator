@@ -121,7 +121,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 				NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:[(NSArray *)tmpValue count]];
 				<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
 				for (NSDictionary *d in tmpValue) {
-					tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:tmpValue];
+					tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:d];
 					[tmpArr addObject:tmpObj];
 				}
 				_<$Relationship.name$> = [NSArray arrayWithArray:tmpArr];<$endif$>
@@ -137,7 +137,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 			NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:[(NSArray *)tmpValue count]];
 			<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
 			for (NSDictionary *d in tmpValue) {
-				tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:tmpValue];
+				tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:d];
 				[tmpArr addObject:tmpObj];
 			}
 			_<$Relationship.name$> = [NSArray arrayWithArray:tmpArr];<$endif$>
@@ -211,7 +211,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 			NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:[(NSArray *)tmpValue count]];
 			<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
 			for (NSDictionary *d in tmpValue) {
-				tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:tmpValue];
+				tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:d];
 				[tmpArr addObject:tmpObj];
 			}
 			self.<$Relationship.name$> = [NSArray arrayWithArray:tmpArr];<$endif$>
