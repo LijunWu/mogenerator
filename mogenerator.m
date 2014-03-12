@@ -889,8 +889,13 @@ NSString  *gObjectClassSuffix;
 #pragma mark - NSString (mapKeyName) -
 @implementation NSString (mapKeyName)
 - (NSString*)mapKeyName {
-    NSString *temp = [self stringByReplacingOccurrencesOfString:@"." withString:@"_"];
-    return [NSString stringWithFormat:@"%@_", temp];
+    NSCharacterSet *invalidSet;
+    NSMutableCharacterSet *validSet = [[[NSCharacterSet letterCharacterSet] mutableCopy] autorelease];
+    [validSet formUnionWithCharacterSet:[NSCharacterSet whitespaceCharacterSet]];
+    [validSet formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
+    invalidSet = [[[validSet copy] autorelease] invertedSet];
+    NSString *temp = [self stringByReplacingEveryOccurrenceOfCharactersFromSet:invalidSet withString:@"_"];
+    return [NSString stringWithFormat:@"_%@_", temp];
 }
 @end
 
