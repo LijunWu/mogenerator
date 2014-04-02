@@ -298,10 +298,10 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 - (void)remove<$Relationship.name.initialCapitalString$>:(<$Relationship.immutableUnorderedCollectionClassName$>*)value_ {
 	[self.<$Relationship.name$>Array removeObjectsInArray:value_];
 }
-- (void)add<$Relationship.name.initialCapitalString$>Object:(<$Relationship.destinationEntity.managedObjectClassName$>*)value_ {
+- (void)add<$Relationship.name.initialCapitalString$>Object:(<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$>*)value_ {
 	[self.<$Relationship.name$>Array addObject:value_];
 }
-- (void)remove<$Relationship.name.initialCapitalString$>Object:(<$Relationship.destinationEntity.managedObjectClassName$>*)value_ {
+- (void)remove<$Relationship.name.initialCapitalString$>Object:(<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$>*)value_ {
 	[self.<$Relationship.name$>Array removeObject:value_];
 }<$endif$>
 <$endforeach do$>
