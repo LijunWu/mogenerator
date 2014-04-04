@@ -1483,6 +1483,12 @@ NSString *ApplicationSupportSubdirectoryName = @"mogenerator";
                 generatedMachineObjectM = [machineObjectM executeWithObject:entity sender:nil];
                 generatedHumanObjectH = [humanObjectH executeWithObject:entity sender:nil];
                 generatedHumanObjectM = [humanObjectM executeWithObject:entity sender:nil];
+                
+                // remove unnecessary empty lines
+                generatedMachineObjectH = [generatedMachineObjectH stringByReplacingOccurrencesOfRegex:@"([ \t]*(\n|\r|\r\n)){2,}" withString:@"\n\n"];
+                generatedMachineObjectM = [generatedMachineObjectM stringByReplacingOccurrencesOfRegex:@"([ \t]*(\n|\r|\r\n)){2,}" withString:@"\n\n"];
+                generatedHumanObjectH = [generatedHumanObjectH stringByReplacingOccurrencesOfRegex:@"([ \t]*(\n|\r|\r\n)){2,}" withString:@"\n\n"];
+                generatedHumanObjectM = [generatedHumanObjectM stringByReplacingOccurrencesOfRegex:@"([ \t]*(\n|\r|\r\n)){2,}" withString:@"\n\n"];
             }
             
             NSString *entityClassName = [entity managedObjectClassName];

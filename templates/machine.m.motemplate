@@ -93,7 +93,6 @@ const struct <$managedObjectClassName$>UserInfo <$managedObjectClassName$>UserIn
 
 <$endif$>
 <$endif$>
-<$endif$>
 <$endforeach do$>
 
 <$foreach Relationship noninheritedRelationships do$>

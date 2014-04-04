@@ -148,6 +148,38 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 	return self;
 }
 
+- (void)updateWithAttributes:(NSDictionary *)attributes {
+	<$if hasSuperentity$>[super updateWithAttributes:attributes];<$endif$>
+	
+	NSString *tmpKey = nil;
+	id tmpValue = nil;
+<$foreach Attribute noninheritedAttributes do$><$if Attribute.hasDefinedAttributeType$>
+	tmpKey = [self.mapping valueForKey:@"<$Attribute.name$>"];
+	if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
+		tmpValue = [attributes valueForKeyPath:tmpKey];
+		if (tmpValue && ![tmpValue isEqual:[NSNull null]]) {
+			self.<$Attribute.name$> = tmpValue;
+		}
+	}<$endif$>
+<$endforeach$>
+<$foreach Relationship noninheritedRelationships do$>
+	tmpKey = [self.mapping valueForKey:@"<$Relationship.name$>"];
+	if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
+		tmpValue = [attributes valueForKeyPath:tmpKey];
+		if (tmpValue && ![tmpValue isEqual:[NSNull null]]) {<$if !Relationship.isToMany$>
+			[self.<$Relationship.name$> updateWithAttributes:tmpValue];<$else$>
+			NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:[(NSArray *)tmpValue count]];
+			<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
+			for (NSDictionary *d in tmpValue) {
+				tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:d];
+				[tmpArr addObject:tmpObj];
+			}
+			self.<$Relationship.name$> = [NSArray arrayWithArray:tmpArr];<$endif$>
+		}
+	}
+<$endforeach$>
+}
+
 <$if !objectClassOnly$>
 	<$if !hasSuperentity$>
 - (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>ExceptRelationShipInContext:(NSManagedObjectContext *)context {
@@ -186,39 +218,29 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 	}
 	return self;
 }
-<$endif$>
 
-- (void)updateWithAttributes:(NSDictionary *)attributes {
-	<$if hasSuperentity$>[super updateWithAttributes:attributes];<$endif$>
-	
-	NSString *tmpKey = nil;
-	id tmpValue = nil;
-<$foreach Attribute noninheritedAttributes do$><$if Attribute.hasDefinedAttributeType$>
-	tmpKey = [self.mapping valueForKey:@"<$Attribute.name$>"];
-	if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
-		tmpValue = [attributes valueForKeyPath:tmpKey];
-		if (tmpValue && ![tmpValue isEqual:[NSNull null]]) {
-			self.<$Attribute.name$> = tmpValue;
-		}
-	}<$endif$>
-<$endforeach$>
-<$foreach Relationship noninheritedRelationships do$>
-	tmpKey = [self.mapping valueForKey:@"<$Relationship.name$>"];
-	if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
-		tmpValue = [attributes valueForKeyPath:tmpKey];
-		if (tmpValue && ![tmpValue isEqual:[NSNull null]]) {<$if !Relationship.isToMany$>
-			[self.<$Relationship.name$> updateWithAttributes:tmpValue];<$else$>
-			NSMutableArray *tmpArr = [NSMutableArray arrayWithCapacity:[(NSArray *)tmpValue count]];
-			<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> *tmpObj = nil;
-			for (NSDictionary *d in tmpValue) {
-				tmpObj = [[<$Relationship.destinationEntity.managedObjectMappingClassNameWithSuffix$> alloc] initWithAttributes:d];
-				[tmpArr addObject:tmpObj];
-			}
-			self.<$Relationship.name$> = [NSArray arrayWithArray:tmpArr];<$endif$>
-		}
-	}
+- (void)updateWith<$managedObjectClassName.initialCapitalString$>ExceptRelationShip:(<$managedObjectClassName$> *)mo {
+	<$if hasSuperentity$>
+	[super updateWith<$superentity.managedObjectClassName.initialCapitalString$>ExceptRelationShip:mo];
+	<$endif$>
+<$foreach Attribute noninheritedAttributes do$>
+	<$if Attribute.hasDefinedAttributeType$>
+		<$if TemplateVar.arc$>
+		_<$Attribute.name$> = mo.<$Attribute.name$>;
+		<$else$>
+			<$if Attribute.isObjectAttributeStringType$>
+		_<$Attribute.name$> = [mo.<$Attribute.name$> copy];
+			<$else$>
+		_<$Attribute.name$> = [mo.<$Attribute.name$> retain];
+			<$endif$>
+		<$endif$>
+	<$endif$>
 <$endforeach$>
 }
+
+<$endif$>
+
+
 
 //////////////////////////////////////////////////////////////////
 #pragma mark - NSNumber value getter and setter
