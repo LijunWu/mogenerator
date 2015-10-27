@@ -183,7 +183,7 @@ const struct <$managedObjectMappingClassNameWithSuffix$><$Relationship.name.init
 <$if !objectClassOnly$>
 	<$if !hasSuperentity$>
 - (<$managedObjectClassName$> *)create<$managedObjectClassName.initialCapitalString$>ExceptRelationShipInContext:(NSManagedObjectContext *)context {
-	<$managedObjectClassName$> *mo = [<$managedObjectClassName$> MR_createInContext:context];
+	<$managedObjectClassName$> *mo = [<$managedObjectClassName$> MR_createEntityInContext:context];
 <$foreach Attribute noninheritedAttributes do$><$if Attribute.hasDefinedAttributeType$>
 	mo.<$Attribute.name$> = self.<$Attribute.name$>;
 <$endif$><$endforeach$>
