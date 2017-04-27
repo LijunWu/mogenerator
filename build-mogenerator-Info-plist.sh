@@ -1,4 +1,5 @@
-rm -f $TMPDIR/mogenerator-Info.plist
+TMPDIR=${DERIVED_FILE_DIR}
+rm -f "${TMPDIR}/mogenerator-Info.plist"
 /usr/libexec/PlistBuddy \
 	-c "Clear" \
 	-c "Import :human.h.motemplate templates/human.h.motemplate" \
@@ -11,4 +12,4 @@ rm -f $TMPDIR/mogenerator-Info.plist
     -c "Import :human.object.m.motemplate templates/human.object.m.motemplate" \
     -c "Import :machine.object.h.motemplate templates/machine.object.h.motemplate" \
     -c "Import :machine.object.m.motemplate templates/machine.object.m.motemplate" \
-	$TMPDIR/mogenerator-Info.plist
+"${TMPDIR}/mogenerator-Info.plist"
