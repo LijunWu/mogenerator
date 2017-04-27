@@ -850,7 +850,7 @@ NSString  *gObjectClassSuffix;
             [ret appendString:@", "];
         }
     }
-    [ret appendString:@""];
+    [ret appendString:@"]"];
     return [NSString stringWithString:ret];
 }
 
